@@ -1,0 +1,354 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0">
+    <meta name="description" content="Доставка вкусной еды от MyCafe">
+    <title>{% block title %}MyCafe{% endblock %}</title>
+    
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* Сброс стилей Bootstrap для навбара с !important */
+        .navbar {
+            padding: 0 !important;
+            box-shadow: none !important;
+            background-color: transparent !important;
+        }
+        
+        /* Основные стили хедера */
+        .header {
+            background-color: white !important;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1) !important;
+        }
+        
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px !important;
+        }
+        
+        /* Логотип - строго влево */
+        .navbar-brand {
+            margin: 0 !important;
+            padding: 10px 0 !important;
+            margin-right: auto !important;
+        }
+        
+        .heavy-logo {
+            height: 40px;
+            width: auto;
+        }
+        
+        /* Навигационные ссылки - равномерное распределение */
+        .navbar-nav {
+            display: flex;
+            justify-content: center;
+            flex-grow: 1;
+            margin: 0 20px !important;
+        }
+        
+        .nav-item {
+            flex: 1;
+            text-align: center;
+            max-width: 120px;
+        }
+        
+        .nav-link {
+            font-weight: 500 !important;
+            padding: 20px 5px !important;
+            color: #333 !important;
+            position: relative;
+            white-space: nowrap;
+        }
+        
+        .nav-link:hover {
+            color: #d32f2f !important;
+        }
+        
+        /* Иконки корзины и профиля */
+        .header-actions {
+            display: flex;
+            align-items: center;
+            margin-left: auto;
+            gap: 15px;
+        }
+        
+        .cart-link, 
+        .profile-link {
+            position: relative;
+            color: #333 !important;
+            font-size: 1.2rem !important;
+            transition: all 0.2s !important;
+        }
+        
+        .cart-link:hover, 
+        .profile-link:hover {
+            color: #d32f2f !important;
+            transform: translateY(-2px) !important;
+        }
+        
+        .cart-quantity {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background-color: #d32f2f !important;
+            color: white !important;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem !important;
+            font-weight: bold !important;
+        }
+        
+        /* Бургер-меню */
+        .navbar-toggler {
+            border: none !important;
+            padding: 10px !important;
+            margin-left: 15px !important;
+        }
+        
+        .navbar-toggler:focus {
+            box-shadow: none !important;
+        }
+        
+        /* Мобильное меню - не заезжает на хедер */
+        @media (max-width: 991.98px) {
+            .navbar-collapse {
+                position: absolute !important;
+                top: 100% !important;
+                left: 0;
+                right: 0;
+                background-color: white !important;
+                padding: 0 15px !important;
+                box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1) !important;
+                z-index: 1000 !important;
+                margin-top: 0 !important;
+            }
+            
+            .navbar-nav {
+                flex-direction: column !important;
+                margin: 0 !important;
+                padding: 10px 0 !important;
+            }
+            
+            .nav-item {
+                max-width: none;
+                text-align: left;
+            }
+            
+            .nav-link {
+                padding: 12px 15px !important;
+                border-bottom: 1px solid #f0f0f0 !important;
+            }
+            
+            .header-actions {
+                justify-content: flex-start !important;
+                padding: 15px 15px !important;
+                margin-left: 0 !important;
+                border-top: 1px solid #f0f0f0 !important;
+            }
+            
+            .cart-quantity {
+                right: 5px !important;
+            }
+        }
+        
+        /* Улучшенное отображение количества товаров */
+        @media (min-width: 992px) {
+            .cart-quantity {
+                top: -5px !important;
+                right: -5px !important;
+            }
+        }
+        
+        /* Футер */
+        .footer {
+            background-color: #f8f9fa !important;
+            padding: 30px 0 20px !important;
+            color: #000 !important;
+        }
+        
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px !important;
+        }
+        
+        .footer-logo {
+            height: 30px;
+            margin-bottom: 15px;
+        }
+        
+        .footer-contacts p {
+            margin-bottom: 5px !important;
+            color: #000 !important;
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 15px;
+            justify-content: flex-end;
+        }
+        
+        .social-link {
+            color: #000 !important;
+            font-size: 1.3rem !important;
+            transition: color 0.2s !important;
+        }
+        
+        .social-link:hover {
+            color: #d32f2f !important;
+        }
+        
+        .footer-links {
+            margin-top: 25px !important;
+            padding-top: 15px !important;
+            border-top: 1px solid #ddd !important;
+            text-align: center !important;
+        }
+        
+        .footer-link {
+            color: #000 !important;
+            text-decoration: none !important;
+            margin: 0 10px !important;
+        }
+        
+        .footer-link:hover {
+            color: #d32f2f !important;
+            text-decoration: underline !important;
+        }
+        
+        /* Основной контент */
+        main {
+            flex: 1 !important;
+        }
+    </style>
+</head>
+<body class="d-flex flex-column min-vh-100">
+    <!-- Header -->
+    <header class="header sticky-top">
+        <div class="header-container">
+            <nav class="navbar navbar-expand-lg">
+                <!-- Логотип строго влево -->
+                <a class="navbar-brand" href="/">
+                    <img src="{% static 'img/-removebg-preview.png' %}" alt="MyCafe" class="heavy-logo">
+                </a>
+                
+                <!-- Бургер-меню -->
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                
+                <!-- Основное меню -->
+                <div class="collapse navbar-collapse" id="navbarContent">
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a href="/" class="nav-link">ГЛАВНАЯ</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/menu" class="nav-link">МЕНЮ</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/contacts" class="nav-link">КОНТАКТЫ</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/about" class="nav-link">О НАС</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/delivery" class="nav-link">ДОСТАВКА И ОПЛАТА</a>
+                        </li>
+                    </ul>
+                    
+                    <!-- Корзина и профиль -->
+                    <div class="header-actions">
+                        <a href="{% url 'cart:cart_detail' %}" class="cart-link position-relative">
+                            <i class="fas fa-shopping-cart"></i>
+                            <span class="cart-quantity">
+                                {% with cart_quantity=cart|length %}
+                                    {% if cart_quantity > 0 %}
+                                        {{ cart_quantity }}
+                                    {% else %}
+                                        0
+                                    {% endif %}
+                                {% endwith %}
+                            </span>
+                        </a>
+                        
+                        {% if user.is_authenticated %}
+                            <a href="{% url 'users:profile' %}" class="profile-link">
+                                <i class="fas fa-user"></i>
+                            </a>
+                        {% else %}
+                            <a href="{% url 'users:login' %}" class="profile-link">
+                                <i class="fas fa-sign-in-alt"></i>
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow-1">
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer mt-auto">
+        <div class="footer-container">
+            <div class="row align-items-center">
+                <!-- Лого и копирайт -->
+                <div class="col-md-4 mb-3 mb-md-0">
+                    <img src="{% static 'img/-removebg-preview.png' %}" alt="MyCafe" class="footer-logo">
+                    <p class="mb-0 mt-2">© 1989-2025 Советская чебуречная</p>
+                </div>
+                
+                <!-- Контакты -->
+                <div class="col-md-4 mb-3 mb-md-0">
+                    <div class="footer-contacts">
+                        <p class="mb-1"><i class="fas fa-phone-alt me-2"></i>+7 (495) 861-35-80</p>
+                        <p class="mb-0"><i class="fas fa-map-marker-alt me-2"></i>Москва, ул.Красина 27, стр.1</p>
+                    </div>
+                </div>
+                
+                <!-- Соцсети -->
+                <div class="col-md-4">
+                    <div class="social-links">
+                        <a href="#" class="social-link"><i class="fab fa-vk"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-telegram"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Документы - опущены ниже полоски -->
+            <div class="footer-links">
+                <a href="{% url 'users:privacy_policy' %}" class="footer-link">Политика конфиденциальности</a>
+                <a href="{% url 'users:user_agreement' %}" class="footer-link">Пользовательское соглашение</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="{% static 'bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+
+    {% block scripts %}{% endblock %}
+
+    
+</body>
+</html>

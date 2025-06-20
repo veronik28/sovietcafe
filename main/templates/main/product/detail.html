@@ -1,0 +1,404 @@
+{% extends "main/base.html" %}
+{% load static %}
+
+{% block title %}
+    {{product.name}}
+{% endblock title %}
+
+{% block content %}
+    <div class="product-container">
+        <!-- Верхний блок - картинка и основная информация -->
+        <div class="product-top-section">
+            <!-- Блок с изображением -->
+            <div class="product-image-container">
+                {% for image in product.images.all %}
+                    <img class="product-image" src="{{ image.image.url }}" alt="" style="display: none;" data-index="{{ forloop.counter0 }}">
+                {% endfor %}
+                <button class="prev-btn"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6 1.41-1.41z"/></svg></button>
+                <button class="next-btn"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/></svg></button>
+            </div>
+
+            <!-- Блок с описанием -->
+            <div class="product-info-container">
+                <h1 class="product-title">{{product.name}}</h1>
+                
+                {% if product.category %}
+                <div class="product-category">
+                    Категория: {{product.category}}
+                </div>
+                {% endif %}
+                
+                <!-- Цена и скидка -->
+                <div class="product-price-block">
+                    {% if product.discount %}
+                        <div class="price-with-discount">
+                            <span class="old-price">{{ product.price }} ₽</span>
+                            <span class="current-price">{{ product.sell_price }} ₽</span>
+                        </div>
+                        <div class="discount-tag">-{{ product.discount }}%</div>
+                    {% else %}
+                        <span class="current-price">{{product.price}} ₽</span>
+                    {% endif %}
+                </div>
+                
+                <!-- Форма добавления в корзину -->
+                <form action="{% url "cart:cart_add" product.id %}" class="add-to-cart-form" method="post">
+                    <div class="quantity-selector">
+                        <label>Кол-во:</label>
+                        {{ cart_product_form.quantity }}
+                        {% csrf_token %}
+                    </div>
+                    <button type="submit" class="add-to-cart-btn">В корзину</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Блок с описанием -->
+        {% if product.description %}
+        <div class="product-description-block">
+            <h3 class="section-title">Описание</h3>
+            <div class="section-content">
+                {{product.description|linebreaks}}
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Нижний блок - состав и БЖУ -->
+        <div class="product-bottom-section">
+            <!-- Состав продукта -->
+            {% if product.composition %}
+            <div class="product-detail-block">
+                <h3 class="section-title">Состав</h3>
+                <div class="section-content">
+                    {{product.composition}}
+                </div>
+            </div>
+            {% endif %}
+            
+            <!-- Пищевая ценность -->
+            <div class="product-detail-block">
+                <h3 class="section-title">Пищевая ценность на 100 г</h3>
+                <div class="nutrition-table">
+                    <table>
+                        <tr>
+                            <td>Калории</td>
+                            <td>{{product.energy|default:"-"}} ккал</td>
+                        </tr>
+                        <tr>
+                            <td>Белки</td>
+                            <td>{{product.proteins|default:"-"}} г</td>
+                        </tr>
+                        <tr>
+                            <td>Жиры</td>
+                            <td>{{product.fats|default:"-"}} г</td>
+                        </tr>
+                        <tr>
+                            <td>Углеводы</td>
+                            <td>{{product.carbohydrates|default:"-"}} г</td>
+                        </tr>
+                        {% if product.weight %}
+                        <tr>
+                            <td>Вес</td>
+                            <td>{{product.weight}} г</td>
+                        </tr>
+                        {% endif %}
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        /* Общие стили */
+        .product-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 15px;
+            font-family: 'Segoe UI', Roboto, sans-serif;
+        }
+        
+        /* Верхний блок - картинка и описание */
+        .product-top-section {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+        
+        /* Блок с изображением */
+        .product-image-container {
+            position: relative;
+            width: 100%;
+            background: #f8f8f8;
+            border-radius: 12px;
+            overflow: hidden;
+            aspect-ratio: 1/1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+         /* Адаптация для десктопов */
+    @media (min-width: 768px) {
+        .product-image-container {
+            width: 45%; /* Уменьшаем ширину на десктопах */
+            min-width: 45%;
+        }
+    }
+        
+        .product-image {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            display: none;
+        }
+        
+          /* Обновленные стили для кнопок */
+    .prev-btn, .next-btn {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        background: rgba(255,255,255,0.95);
+        border: none;
+        width: 36px; /* Уменьшен размер */
+        height: 36px; /* Уменьшен размер */
+        border-radius: 50%;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        z-index: 10;
+        padding: 0;
+        margin: 0;
+    }
+        
+        .prev-btn {
+            left: 16px;
+        }
+        
+        .next-btn {
+            right: 16px;
+            
+        }
+        
+        .prev-btn svg, .next-btn svg {
+            width: 24px;
+            height: 24px;
+            fill: #e31e24;
+        }
+        
+        /* Блок с информацией */
+        .product-info-container {
+            width: 100%;
+        }
+        
+        .product-title {
+            font-size: 24px;
+            margin: 0 0 8px 0;
+            color: #333;
+            font-weight: 700;
+            line-height: 1.3;
+        }
+        
+        .product-category {
+            font-size: 15px;
+            color: #666;
+            margin: 0 0 12px 0;
+        }
+        
+        .product-price-block {
+            margin: 0 0 16px 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .current-price {
+            font-size: 26px;
+            font-weight: 700;
+            color: #e31e24;
+        }
+        
+        .old-price {
+            font-size: 18px;
+            text-decoration: line-through;
+            color: #999;
+        }
+        
+        .discount-tag {
+            background: #e31e24;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 16px;
+            font-size: 15px;
+            font-weight: 600;
+        }
+        
+        /* Форма добавления в корзину */
+        .add-to-cart-form {
+            margin-top: 8px;
+        }
+        
+        .quantity-selector {
+            margin: 0 0 16px 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .quantity-selector label {
+            font-size: 15px;
+            color: #333;
+            font-weight: 500;
+        }
+        
+        .quantity-selector input {
+            width: 70px;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+            text-align: center;
+            font-weight: 500;
+        }
+        
+        .add-to-cart-btn {
+            background: #e31e24;
+            color: white;
+            border: none;
+            padding: 14px 20px;
+            border-radius: 8px;
+            width: 100%;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .add-to-cart-btn:hover {
+            background: #c00;
+        }
+        
+        /* Блок описания */
+        .product-description-block {
+            background: #f8f8f8;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .section-title {
+            font-size: 18px;
+            margin: 0 0 12px 0;
+            color: #333;
+            font-weight: 600;
+        }
+        
+        .section-content {
+            font-size: 15px;
+            line-height: 1.5;
+            color: #444;
+        }
+        
+        /* Нижний блок - состав и БЖУ */
+        .product-bottom-section {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+        
+        .product-detail-block {
+            background: #f8f8f8;
+            border-radius: 12px;
+            padding: 20px;
+        }
+        
+        .nutrition-table {
+            width: 100%;
+        }
+        
+        .nutrition-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .nutrition-table tr:not(:last-child) td {
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .nutrition-table td {
+            padding: 10px 0;
+            font-size: 15px;
+        }
+        
+        .nutrition-table td:first-child {
+            color: #666;
+            width: 60%;
+        }
+        
+        .nutrition-table td:last-child {
+            text-align: right;
+            font-weight: 600;
+        }
+        
+        /* Десктопная версия */
+        @media (min-width: 768px) {
+            .product-top-section {
+                flex-direction: row;
+                gap: 30px;
+            }
+            
+            /* Обновленные стили для контейнера изображения */
+            .product-image-container {
+                position: relative;
+                width: 100%;
+                max-width: 500px; /* Уменьшаем максимальную ширину */
+                margin: 0 auto; /* Центрируем */
+                background: #f8f8f8;
+                border-radius: 12px;
+                overflow: hidden;
+                aspect-ratio: 1/1;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            
+            .product-info-container {
+                width: 50%;
+                padding-top: 8px;
+            }
+            
+            .product-bottom-section {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+    </style>
+
+    <script>
+        // Скрипт для переключения изображений
+        const images = document.querySelectorAll('.product-image');
+        const prevBtn = document.querySelector('.prev-btn');
+        const nextBtn = document.querySelector('.next-btn');
+        let currentIndex = 0;
+
+        images[currentIndex].style.display = 'block';
+
+        if (images.length === 1) {
+            prevBtn.style.display = 'none';
+            nextBtn.style.display = 'none';
+        } else {
+            prevBtn.addEventListener('click', () => {
+                images[currentIndex].style.display = 'none';
+                currentIndex = (currentIndex - 1 + images.length) % images.length;
+                images[currentIndex].style.display = 'block';
+            });
+
+            nextBtn.addEventListener('click', () => {
+                images[currentIndex].style.display = 'none';
+                currentIndex = (currentIndex + 1) % images.length;
+                images[currentIndex].style.display = 'block';
+            });
+        }
+    </script>
+{% endblock content %}

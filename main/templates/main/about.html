@@ -1,0 +1,209 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block title %}О нас | Советская Чебуречная{% endblock title %}
+
+{% block content %}
+<section class="about-page py-5">
+    <div class="container">
+        <!-- Герой-секция -->
+        <div class="text-center py-5 mb-5">
+            <h1 class="display-4 fw-bold mb-4 text-danger">Советская Чебуречная</h1>
+            <div class="d-flex justify-content-center mb-4">
+                <div class="border-top border-danger border-3" style="width: 100px;"></div>
+            </div>
+            <p class="lead mx-auto" style="max-width: 700px;">
+                Сохраняя традиции с 1985 года. Настоящие чебуреки по советским рецептам
+            </p>
+        </div>
+
+        <!-- История -->
+        <div class="row align-items-center mb-5">
+            <div class="col-lg-6">
+                <div class="overflow-hidden rounded-3 shadow" style="height: 400px;">
+                    <img src="{% static 'img/XXXL.jpg' %}" alt="История нашей чебуречной" 
+                         class="img-fluid h-100 w-100 object-fit-cover">
+                </div>
+            </div>
+            <div class="col-lg-6 mt-4 mt-lg-0">
+                <h2 class="fw-bold mb-4">Наша история</h2>
+                <p class="fs-5">Первая "Советская Чебуречная" открылась в 1989 году на улице Красина. С тех пор мы печем чебуреки по оригинальному рецепту с хрустящей корочкой и сочной начинкой.</p>
+                <p class="fs-5">Наше кафе — это кусочек советской кулинарной истории в современной Москве. Тесто замешивается вручную, начинка готовится из свежего мяса каждый день.</p>
+                <div class="d-flex mt-4 justify-content-between">
+                    <div class="text-center">
+                        <div class="fs-1 fw-bold text-danger">38+</div>
+                        <div class="text-muted">лет традиций</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="fs-1 fw-bold text-danger">20+</div>
+                        <div class="text-muted">видов чебуреков</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="fs-1 fw-bold text-danger">1M+</div>
+                        <div class="text-muted">довольных клиентов</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Традиции -->
+        <div class="row align-items-center my-5 py-5">
+            <div class="col-lg-6 order-lg-2">
+                <div class="overflow-hidden rounded-3 shadow" style="height: 500px;">
+                    <img src="{% static 'img/00720Carrochi0286_2.jpg' %}" alt="Наши традиции" 
+                         class="img-fluid h-100 w-100 object-fit-cover">
+                </div>
+            </div>
+            <div class="col-lg-6 mt-4 mt-lg-0 order-lg-1">
+                <h2 class="fw-bold mb-4">Наши традиции</h2>
+                <div class="tradition-item d-flex mb-4">
+                    <div class="flex-shrink-0 me-4">
+                        <div class="tradition-icon bg-danger text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                            <i class="fas fa-hand-paper fs-4"></i>
+                        </div>
+                    </div>
+                    <div>
+                        <h4 class="h5">Ручная лепка</h4>
+                        <p>Каждый чебурек лепится вручную по традиционной технологии</p>
+                    </div>
+                </div>
+                <div class="tradition-item d-flex mb-4">
+                    <div class="flex-shrink-0 me-4">
+                        <div class="tradition-icon bg-danger text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                            <i class="fas fa-mortar-pestle fs-4"></i>
+                        </div>
+                    </div>
+                    <div>
+                        <h4 class="h5">Секретные специи</h4>
+                        <p>Используем оригинальную смесь специй по рецепту 1985 года</p>
+                    </div>
+                </div>
+                <div class="tradition-item d-flex mb-4">
+                    <div class="flex-shrink-0 me-4">
+                        <div class="tradition-icon bg-danger text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                            <i class="fas fa-fire fs-4"></i>
+                        </div>
+                    </div>
+                    <div>
+                        <h4 class="h5">Правильная жарка</h4>
+                        <p>Готовим в казанах на топлёном масле при идеальной температуре</p>
+                    </div>
+                </div>
+                <div class="tradition-item d-flex">
+                    <div class="flex-shrink-0 me-4">
+                        <div class="tradition-icon bg-danger text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                            <i class="fas fa-heart fs-4"></i>
+                        </div>
+                    </div>
+                    <div>
+                        <h4 class="h5">С любовью</h4>
+                        <p>Вкладываем душу в каждый чебурек, как делали это наши деды</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Принципы -->
+        <div class="py-5 my-5">
+            <h2 class="text-center fw-bold mb-5">Почему нас любят</h2>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="principle-card p-4 h-100 text-center">
+                        <div class="principle-icon mb-3 mx-auto">
+                            <i class="fas fa-award text-danger" style="font-size: 2.5rem;"></i>
+                        </div>
+                        <h3 class="h4">Проверено временем</h3>
+                        <p>38 лет безупречной репутации и довольных клиентов</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="principle-card p-4 h-100 text-center">
+                        <div class="principle-icon mb-3 mx-auto">
+                            <i class="fas fa-leaf text-danger" style="font-size: 2.5rem;"></i>
+                        </div>
+                        <h3 class="h4">Натуральные продукты</h3>
+                        <p>Только свежее мясо, домашнее тесто и натуральные специи</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="principle-card p-4 h-100 text-center">
+                        <div class="principle-icon mb-3 mx-auto">
+                            <i class="fas fa-history text-danger" style="font-size: 2.5rem;"></i>
+                        </div>
+                        <h3 class="h4">Традиционные рецепты</h3>
+                        <p>Готовим по ГОСТу 1985 года без современных упрощений</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Призыв к действию -->
+    <div class="bg-danger py-5 mt-5 text-white">
+        <div class="container text-center py-4">
+            <h2 class="fw-bold mb-4">Попробуйте настоящие советские чебуреки!</h2>
+            <a href="/menu/" class="btn btn-light btn-lg px-5">Заказать сейчас</a>
+        </div>
+    </div>
+</section>
+{% endblock content %}
+
+{% block styles %}
+<style>
+    .principle-card {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        transition: all 0.3s ease;
+        border: 1px solid #ffecec;
+        height: 100%;
+    }
+    
+    .principle-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 6px 16px rgba(231, 76, 60, 0.15);
+    }
+    
+    .principle-icon {
+        width: 80px;
+        height: 80px;
+        background: #fff4f4;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 1rem;
+        transition: all 0.3s ease;
+    }
+    
+    .principle-card:hover .principle-icon {
+        background: #f8d7da;
+        transform: scale(1.1);
+    }
+    
+    .tradition-icon {
+        transition: all 0.3s ease;
+    }
+    
+    .tradition-item:hover .tradition-icon {
+        transform: scale(1.1);
+        background: #c82333 !important;
+    }
+    
+    .text-danger {
+        color: #e74c3c !important;
+    }
+    
+    .bg-danger {
+        background-color: #e74c3c !important;
+    }
+    
+    .about-page {
+        background-color: #fff9f9;
+    }
+    
+    .object-fit-cover {
+        object-fit: cover;
+    }
+</style>
+{% endblock styles %}

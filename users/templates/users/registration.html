@@ -1,0 +1,389 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block title %}Регистрация{% endblock title %}
+
+{% block content %}
+    <section class="registration-section">
+        <div class="registration-container">
+            <div class="registration-card">
+                <h2 class="registration-title">Создание аккаунта</h2>
+                
+                <!-- Форма регистрации -->
+                <form method="post" action="{% url 'user:registration' %}" novalidate class="registration-form">
+                    {% csrf_token %}
+                    
+                    <!-- Общие ошибки формы -->
+                    {% if form.non_field_errors %}
+                        <div class="form-errors">
+                            {% for error in form.non_field_errors %}
+                                <p>{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    
+                    <div class="form-grid">
+                        <!-- Имя -->
+                        <div class="form-group">
+                            <label for="id_first_name" class="form-label">Имя*</label>
+                            <input type="text" 
+                                   class="form-input {% if form.first_name.errors %}input-error{% endif %}" 
+                                   id="id_first_name"
+                                   name="first_name" 
+                                   value="{{ form.first_name.value|default:'' }}"
+                                   required>
+                            {% if form.first_name.errors %}
+                                <div class="error-message">
+                                    {{ form.first_name.errors.0 }}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Фамилия -->
+                        <div class="form-group">
+                            <label for="id_last_name" class="form-label">Фамилия</label>
+                            <input type="text" 
+                                   class="form-input {% if form.last_name.errors %}input-error{% endif %}" 
+                                   id="id_last_name"
+                                   name="last_name" 
+                                   value="{{ form.last_name.value|default:'' }}">
+                            {% if form.last_name.errors %}
+                                <div class="error-message">
+                                    {{ form.last_name.errors.0 }}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Логин -->
+                        <div class="form-group">
+                            <label for="id_username" class="form-label">Логин*</label>
+                            <input type="text" 
+                                   class="form-input {% if form.username.errors %}input-error{% endif %}" 
+                                   id="id_username"
+                                   name="username" 
+                                   value="{{ form.username.value|default:'' }}"
+                                   required>
+                            {% if form.username.errors %}
+                                <div class="error-message">
+                                    {{ form.username.errors.0 }}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Email -->
+                        <div class="form-group">
+                            <label for="id_email" class="form-label">Email*</label>
+                            <input type="email" 
+                                   class="form-input {% if form.email.errors %}input-error{% endif %}" 
+                                   id="id_email"
+                                   name="email" 
+                                   value="{{ form.email.value|default:'' }}"
+                                   required>
+                            {% if form.email.errors %}
+                                <div class="error-message">
+                                    {{ form.email.errors.0 }}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Телефон -->
+                        <div class="form-group full-width">
+                            <label for="id_phone" class="form-label">Телефон*</label>
+                            <input type="tel" 
+                                   class="form-input {% if form.phone.errors %}input-error{% endif %}" 
+                                   id="id_phone"
+                                   name="phone" 
+                                   value="{{ form.phone.value|default:'' }}"
+                                   placeholder="+7 (XXX) XXX-XX-XX"
+                                   required>
+                            {% if form.phone.errors %}
+                                <div class="error-message">
+                                    {{ form.phone.errors.0 }}
+                                </div>
+                            {% endif %}
+                            <div class="input-hint">Формат: +7XXX или 8XXX (11 цифр)</div>
+                        </div>
+                        
+                        <!-- Пароль -->
+                        <div class="form-group">
+                            <label for="id_password1" class="form-label">Пароль*</label>
+                            <input type="password" 
+                                   class="form-input {% if form.password1.errors %}input-error{% endif %}" 
+                                   id="id_password1"
+                                   name="password1" 
+                                   required>
+                            {% if form.password1.errors %}
+                                <div class="error-message">
+                                    {{ form.password1.errors.0 }}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Подтверждение пароля -->
+                        <div class="form-group">
+                            <label for="id_password2" class="form-label">Подтверждение пароля*</label>
+                            <input type="password" 
+                                   class="form-input {% if form.password2.errors %}input-error{% endif %}" 
+                                   id="id_password2"
+                                   name="password2" 
+                                   required>
+                            {% if form.password2.errors %}
+                                <div class="error-message">
+                                    {{ form.password2.errors.0 }}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Согласие на обработку данных -->
+                        <div class="form-group full-width agreement-checkbox">
+                            <div class="checkbox-container {% if form.agree_to_policy.errors %}checkbox-error{% endif %}">
+                                <input class="checkbox-input" 
+                                    type="checkbox" 
+                                    id="id_agree_to_policy" 
+                                    name="agree_to_policy"
+                                    required>
+                                <label class="checkbox-label" for="id_agree_to_policy">
+                                    Соглашаюсь с <a href="{% url 'users:user_agreement' %}" target="_blank" class="link-underline">пользовательским соглашением</a> 
+                                    и <a href="{% url 'users:privacy_policy' %}" target="_blank" class="link-underline">политикой конфиденциальности</a>*
+                                </label>
+                            </div>
+                            {% if form.agree_to_policy.errors %}
+                                <div class="error-message">
+                                    {{ form.agree_to_policy.errors.0 }}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Кнопка отправки -->
+                        <div class="form-group full-width">
+                            <button type="submit" class="submit-button">
+                                Зарегистрироваться
+                            </button>
+                        </div>
+                    </div>
+                </form>
+                
+                <!-- Ссылка на вход - улучшенный вариант -->
+                <div class="account-exists">
+                    <span class="account-exists-text">Уже есть аккаунт?</span>
+                    <a href="{% url 'user:login' %}" class="account-exists-link">Войти</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <style>
+        /* Сброс стилей для изоляции от base.css */
+        .registration-section * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        }
+        
+        /* Основные стили формы */
+        .registration-section {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        
+        .registration-container {
+            width: 100%;
+            max-width: 800px;
+        }
+        
+        .registration-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            padding: 40px;
+            width: 100%;
+        }
+        
+        .registration-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .full-width {
+            grid-column: span 2;
+        }
+        
+        .form-label {
+            display: block;
+            font-size: 14px;
+            color: #555;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 15px;
+            transition: border-color 0.3s;
+        }
+        
+        .form-input:focus {
+            border-color: #4a90e2;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
+        }
+        
+        .input-error {
+            border-color: #e74c3c;
+        }
+        
+        .input-error:focus {
+            box-shadow: 0 0 0 2px rgba(231, 76, 60, 0.2);
+        }
+        
+        .input-hint {
+            font-size: 12px;
+            color: #777;
+            margin-top: 5px;
+        }
+        
+        .error-message {
+            color: #e74c3c;
+            font-size: 13px;
+            margin-top: 5px;
+        }
+        
+        .form-errors {
+            color: #e74c3c;
+            background-color: #fdecea;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+        
+        /* Стили для чекбокса */
+        .agreement-checkbox {
+            margin-top: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .checkbox-container {
+            display: flex;
+            align-items: flex-start;
+        }
+        
+        .checkbox-input {
+            margin-right: 10px;
+            margin-top: 3px;
+            min-width: 16px;
+            height: 16px;
+        }
+        
+        .checkbox-label {
+            font-size: 14px;
+            color: #555;
+            line-height: 1.5;
+        }
+        
+        .checkbox-error .checkbox-label {
+            color: #e74c3c;
+        }
+        
+        /* Стили для кнопки */
+        .submit-button {
+            width: 100%;
+            padding: 14px;
+            background-color: #4a90e2;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .submit-button:hover {
+            background-color: #3a7bc8;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Улучшенные стили для ссылки "Уже есть аккаунт" */
+        .account-exists {
+            text-align: center;
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            font-size: 15px;
+            color: #666;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .account-exists-text {
+            color: #666;
+        }
+        
+        .account-exists-link {
+            color: #4a90e2;
+            font-weight: 500;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        
+        .account-exists-link:hover {
+            color: #3a7bc8;
+            text-decoration: underline;
+        }
+        
+        /* Адаптация для мобильных */
+        @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .full-width {
+                grid-column: span 1;
+            }
+            
+            .registration-card {
+                padding: 25px;
+            }
+            
+            .account-exists {
+                flex-direction: column;
+                gap: 5px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .registration-section {
+                padding: 15px;
+            }
+            
+            .registration-card {
+                padding: 20px;
+            }
+        }
+    </style>
+{% endblock content %}

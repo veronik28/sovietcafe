@@ -1,0 +1,235 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block title %}Авторизация{% endblock title %}
+
+{% block content %}
+    <section class="auth-section">
+        <div class="auth-container">
+            <div class="auth-card">
+                <h2 class="auth-title">Вход в аккаунт</h2>
+                
+                <!-- Форма авторизации -->
+                <form method="post" action="{% url 'user:login' %}" class="auth-form">
+                    {% csrf_token %}
+                    
+                    {% if form.non_field_errors %}
+                        <div class="form-errors">
+                            {% for error in form.non_field_errors %}
+                                <p>{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    
+                    {% if request.GET.next %}
+                        <input type="hidden" name="next" value="{{request.GET.next}}">
+                    {% endif %}
+                    
+                    <div class="form-group">
+                        <label for="id_username" class="form-label">Логин*</label>
+                        <input type="text" 
+                               class="form-input {% if form.username.errors %}input-error{% endif %}" 
+                               id="id_username"
+                               name="username" 
+                               value="{{ form.username.value|default:'' }}"
+                               placeholder="Введите ваш логин"
+                               required>
+                        {% if form.username.errors %}
+                            <div class="error-message">
+                                {{ form.username.errors.0 }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="id_password" class="form-label">Пароль*</label>
+                        <input type="password" 
+                               class="form-input {% if form.password.errors %}input-error{% endif %}" 
+                               id="id_password"
+                               name="password" 
+                               placeholder="Введите ваш пароль"
+                               required>
+                        {% if form.password.errors %}
+                            <div class="error-message">
+                                {{ form.password.errors.0 }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="form-group">
+                        <button type="submit" class="submit-button">
+                            Войти
+                        </button>
+                    </div>
+                    
+                    <div class="auth-links">
+                        <a href="#" class="auth-link">Забыли пароль?</a>
+                        <a href="{% url 'user:registration' %}" class="auth-link">Создать аккаунт</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <style>
+        /* Сброс стилей для изоляции от base.css */
+        .auth-section * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        }
+        
+        /* Основные стили формы */
+        .auth-section {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        
+        .auth-container {
+            width: 100%;
+            max-width: 500px;
+        }
+        
+        .auth-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            padding: 40px;
+            width: 100%;
+        }
+        
+        .auth-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            display: block;
+            font-size: 14px;
+            color: #555;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 15px;
+            transition: border-color 0.3s;
+        }
+        
+        .form-input:focus {
+            border-color: #4a90e2;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
+        }
+        
+        .input-error {
+            border-color: #e74c3c;
+        }
+        
+        .input-error:focus {
+            box-shadow: 0 0 0 2px rgba(231, 76, 60, 0.2);
+        }
+        
+        .error-message {
+            color: #e74c3c;
+            font-size: 13px;
+            margin-top: 5px;
+        }
+        
+        .form-errors {
+            color: #e74c3c;
+            background-color: #fdecea;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+        
+        /* Стили для кнопки */
+        .submit-button {
+            width: 100%;
+            padding: 14px;
+            background-color: #4a90e2;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+        
+        .submit-button:hover {
+            background-color: #3a7bc8;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Стили для ссылок */
+        .auth-links {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+        
+        .auth-link {
+            color: #4a90e2;
+            font-size: 14px;
+            font-weight: 500;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        
+        .auth-link:hover {
+            color: #3a7bc8;
+            text-decoration: underline;
+        }
+        
+        /* Адаптация для мобильных */
+        @media (max-width: 600px) {
+            .auth-card {
+                padding: 25px;
+            }
+            
+            .auth-links {
+                flex-direction: column;
+                gap: 12px;
+                align-items: center;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .auth-section {
+                padding: 15px;
+            }
+            
+            .auth-card {
+                padding: 20px;
+            }
+            
+            .auth-title {
+                font-size: 22px;
+                margin-bottom: 25px;
+            }
+        }
+    </style>
+{% endblock content %}

@@ -1,0 +1,242 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block title %}Создать заказ{% endblock title %}
+
+{% block content %}
+<div class="container my-4">
+    <div class="row">
+        <div class="col-lg-8 order-lg-1 order-2">
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h2 class="card-title mb-4">Оформление заказа</h2>
+                    
+                    <!-- Общее сообщение об ошибке -->
+                    {% if form.errors %}
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        Пожалуйста, заполните все поля правильно!
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    {% endif %}
+                    
+                    <form action="" method="post" class="order-form" novalidate>
+                        {% csrf_token %}
+                        <div class="row">
+                            <!-- Левая колонка - личные данные -->
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="id_first_name" class="form-label">Имя*</label>
+                                    <input type="text" class="form-control {% if form.first_name.errors %}is-invalid{% endif %}" 
+                                        id="id_first_name" name="first_name" 
+                                        placeholder="Ваше имя" value="{{ form.first_name.value|default:'' }}" required>
+                                    {% if form.first_name.errors %}
+                                    <div class="invalid-feedback">
+                                        {{ form.first_name.errors.0 }}
+                                    </div>
+                                    {% endif %}
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="id_last_name" class="form-label">Фамилия*</label>
+                                    <input type="text" class="form-control {% if form.last_name.errors %}is-invalid{% endif %}" 
+                                        id="id_last_name" name="last_name" 
+                                        placeholder="Ваша фамилия" value="{{ form.last_name.value|default:'' }}" required>
+                                    {% if form.last_name.errors %}
+                                    <div class="invalid-feedback">
+                                        {{ form.last_name.errors.0 }}
+                                    </div>
+                                    {% endif %}
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="id_phone" class="form-label">Телефон*</label>
+                                    <input type="tel" class="form-control {% if form.phone.errors %}is-invalid{% endif %}" 
+                                        id="id_phone" name="phone" 
+                                        placeholder="+7 (999) 123-45-67" value="{{ form.phone.value|default:'' }}" required>
+                                    {% if form.phone.errors %}
+                                    <div class="invalid-feedback">
+                                        {{ form.phone.errors.0 }}
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            
+                            <!-- Правая колонка - контактные данные -->
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="id_email" class="form-label">Email*</label>
+                                    <input type="email" class="form-control {% if form.email.errors %}is-invalid{% endif %}" 
+                                        id="id_email" name="email" 
+                                        placeholder="example@mail.com" value="{{ form.email.value|default:'' }}" required>
+                                    {% if form.email.errors %}
+                                    <div class="invalid-feedback">
+                                        {{ form.email.errors.0 }}
+                                    </div>
+                                    {% endif %}
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="id_city" class="form-label">Город*</label>
+                                    <input type="text" class="form-control {% if form.city.errors %}is-invalid{% endif %}" 
+                                        id="id_city" name="city" 
+                                        placeholder="Ваш город" value="{{ form.city.value|default:'' }}" required>
+                                    {% if form.city.errors %}
+                                    <div class="invalid-feedback">
+                                        {{ form.city.errors.0 }}
+                                    </div>
+                                    {% endif %}
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="id_address" class="form-label">Адрес*</label>
+                                    <input type="text" class="form-control {% if form.address.errors %}is-invalid{% endif %}" 
+                                        id="id_address" name="address" 
+                                        placeholder="ул. Ленина, д. 10, кв. 25" value="{{ form.address.value|default:'' }}" required>
+                                    {% if form.address.errors %}
+                                    <div class="invalid-feedback">
+                                        {{ form.address.errors.0 }}
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-4">
+                            <button type="submit" class="btn btn-primary w-100 py-3">Оформить заказ</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Блок с корзиной -->
+        <div class="col-lg-4 order-lg-2 order-1 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h3 class="card-title mb-3">Ваш заказ</h3>
+                    <ul class="list-group mb-3">
+                        {% for item in cart %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            {{item.quantity}} x {{item.product.name}}
+                            <span class="badge bg-primary rounded-pill">{{item.total_price}}₽</span>
+                        </li>
+                        {% endfor %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center fw-bold">
+                            Итого
+                            <span>{{cart.get_total_price}}₽</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript для валидации формы -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.querySelector('.order-form');
+    
+    form.addEventListener('submit', function(e) {
+        let isValid = true;
+        const requiredFields = form.querySelectorAll('[required]');
+        
+        // Проверка всех обязательных полей
+        requiredFields.forEach(function(field) {
+            if (!field.value.trim()) {
+                field.classList.add('is-invalid');
+                isValid = false;
+            }
+        });
+        
+        if (!isValid) {
+            e.preventDefault();
+            
+            // Прокрутка к первой ошибке
+            const firstError = form.querySelector('.is-invalid');
+            if (firstError) {
+                firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+    });
+    
+    // Убираем ошибку при вводе
+    form.querySelectorAll('[required]').forEach(function(field) {
+        field.addEventListener('input', function() {
+            if (this.value.trim()) {
+                this.classList.remove('is-invalid');
+            }
+        });
+    });
+});
+</script>
+
+<style>
+    .card {
+        border-radius: 12px;
+        border: none;
+    }
+    
+    .form-control {
+        border-radius: 8px;
+        padding: 12px 15px;
+        border: 1px solid #e0e0e0;
+        transition: all 0.3s;
+    }
+    
+    .form-control:focus {
+        border-color: #86b7fe;
+        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.15);
+    }
+    
+    .btn-primary {
+        background-color: #0d6efd;
+        border: none;
+        border-radius: 8px;
+        padding: 12px;
+        font-weight: 500;
+        font-size: 1.1rem;
+        transition: all 0.3s;
+    }
+    
+    .btn-primary:hover {
+        background-color: #0b5ed7;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(13, 110, 253, 0.2);
+    }
+    
+    .list-group-item {
+        border-radius: 8px !important;
+        margin-bottom: 8px;
+    }
+    
+    .is-invalid {
+        border-color: #dc3545 !important;
+    }
+    
+    .invalid-feedback {
+        color: #dc3545;
+        font-size: 0.875em;
+        margin-top: 0.25rem;
+    }
+    
+    .alert {
+        border-radius: 8px;
+    }
+    
+    @media (max-width: 768px) {
+        .col-md-6 {
+            margin-bottom: 0;
+        }
+        
+        .form-control {
+            padding: 10px 12px;
+        }
+        
+        .btn-primary {
+            padding: 10px;
+            font-size: 1rem;
+        }
+    }
+</style>
+{% endblock content %}

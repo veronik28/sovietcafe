@@ -1,0 +1,191 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block title %}Контакты - MyCafe{% endblock title %}
+
+{% block content %}
+<section class="contacts py-3 py-md-5">  <!-- Уменьшил отступы -->
+    <div class="container">
+        <h1 class="text-center mb-3 mb-md-5">Контакты</h1>  <!-- Уменьшил отступ -->
+        
+        <div class="row g-2 g-md-4">  <!-- Уменьшил зазоры между колонками -->
+            <!-- Основные контакты -->
+            <div class="col-lg-4 mb-2">  <!-- Добавил mb-2 для мобильных -->
+                <div class="contact-card h-100 p-3 p-md-4">  <!-- Уменьшил padding -->
+                    <div class="contact-icon mb-2">  <!-- Уменьшил отступ -->
+                        <img src="{% static 'img/phone-icon.svg' %}" alt="Телефон" width="30">  <!-- Уменьшил иконку -->
+                    </div>
+                    <h3 class="h4 mb-2">Телефон</h3>  <!-- Уменьшил отступ -->
+                    <p class="contact-phone fs-5 fw-bold mb-1">+7 (495) 123-45-67</p>  <!-- Уменьшил размер и отступ -->
+                    <p class="text-muted small">Ежедневно с 10:00 до 23:00</p>  <!-- Уменьшил текст -->
+                </div>
+            </div>
+            
+            <div class="col-lg-4 mb-2">
+                <div class="contact-card h-100 p-3 p-md-4">
+                    <div class="contact-icon mb-2">
+                        <img src="{% static 'img/address-icon.svg' %}" alt="Адрес" width="30">
+                    </div>
+                    <h3 class="h4 mb-2">Адрес</h3>
+                    <p class="fs-6 mb-1">г. Москва, ул. Красина, д. 27, стр. 1</p>  <!-- Уменьшил размер -->
+                    <p class="text-muted small">Вход со стороны парковки</p>
+                </div>
+            </div>
+            
+            <div class="col-lg-4 mb-2">
+                <div class="contact-card h-100 p-3 p-md-4">
+                    <div class="contact-icon mb-2">
+                        <img src="{% static 'img/email-icon.svg' %}" alt="Email" width="30">
+                    </div>
+                    <h3 class="h4 mb-2">Email</h3>
+                    <p class="fs-6 mb-1">info@mycafe.ru</p>
+                    <p class="text-muted small">Для сотрудничества: partner@mycafe.ru</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Карта и форма -->
+        <div class="row mt-3 mt-md-5 g-2 g-md-4">  <!-- Уменьшил отступы и зазоры -->
+            <div class="col-lg-6 mb-3 mb-lg-0">  <!-- Добавил mb-3 -->
+                <div class="map-container rounded-3 overflow-hidden shadow-sm">
+                    <div id="map" style="width: 100%; height: 300px;"></div>  <!-- Уменьшил высоту -->
+                    <script src="https://api-maps.yandex.ru/2.1/?apikey=98e0df28-87d3-429d-be61-9bd255fbcf59&lang=ru_RU"></script>
+                    <script>
+                        ymaps.ready(init);
+                        function init() {
+                            var myMap = new ymaps.Map("map", {
+                                center: [55.767670, 37.588144],
+                                zoom: 17
+                            });
+                            var myPlacemark = new ymaps.Placemark([55.767670, 37.588144], {
+                                hintContent: 'ул. Красина, 27 стр.1',
+                                balloonContent: 'Наш офис'
+                            });
+                            myMap.geoObjects.add(myPlacemark);
+                        }
+                    </script>
+                </div>
+            </div>
+            
+            <div class="col-lg-6">
+                <div class="feedback-form p-3 p-md-4 rounded-3 shadow-sm h-100">  <!-- Уменьшил padding -->
+                    <h2 class="h3 mb-3">Обратная связь</h2>  <!-- Уменьшил отступ -->
+                    <form>
+                        <div class="mb-2">  <!-- Уменьшил отступ -->
+                            <input type="text" class="form-control py-2" placeholder="Ваше имя">  <!-- Уменьшил высоту -->
+                        </div>
+                        <div class="mb-2">
+                            <input type="tel" class="form-control py-2" placeholder="Телефон">
+                        </div>
+                        <div class="mb-2">
+                            <textarea class="form-control py-2" rows="3" placeholder="Сообщение"></textarea>  <!-- Уменьшил высоту -->
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100 py-2">Отправить</button>  <!-- Уменьшил высоту -->
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Режим работы -->
+        <div class="working-hours mt-3 mt-md-5 text-center">  <!-- Уменьшил отступ -->
+            <h2 class="h3 mb-3">Режим работы</h2>  <!-- Уменьшил отступ -->
+            <div class="d-flex justify-content-center flex-wrap gap-2 gap-md-4">  <!-- Уменьшил зазоры -->
+                <div class="hours-item px-2 px-md-3 py-1 py-md-2">  <!-- Уменьшил padding -->
+                    <p class="fw-bold mb-1">Понедельник - Пятница</p>
+                    <p class="small">10:00 - 22:00</p>  <!-- Уменьшил текст -->
+                </div>
+                <div class="hours-item px-2 px-md-3 py-1 py-md-2">
+                    <p class="fw-bold mb-1">Суббота - Воскресенье</p>
+                    <p class="small">11:00 - 23:00</p>
+                </div>
+                <div class="hours-item px-2 px-md-3 py-1 py-md-2">
+                    <p class="fw-bold mb-1">Доставка</p>
+                    <p class="small">Ежедневно до 22:30</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    /* Мобильные стили */
+    @media (max-width: 767.98px) {
+        .contact-card {
+            padding: 1rem !important;
+            margin-bottom: 0.5rem;
+        }
+        
+        .contact-icon {
+            width: 50px !important;
+            height: 50px !important;
+        }
+        
+        .contact-icon img {
+            width: 25px !important;
+        }
+        
+        .hours-item {
+            padding: 0.5rem 1rem !important;
+            margin-bottom: 0.3rem;
+        }
+        
+        .map-container {
+            margin-bottom: 1rem;
+        }
+    }
+    
+    .contact-card {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+        transition: transform 0.3s;
+        text-align: center;
+    }
+    
+    .contact-card:hover {
+        transform: translateY(-5px);
+    }
+    
+    .contact-icon {
+        background: #fff4f4;
+        width: 70px;
+        height: 70px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto;
+    }
+    
+    .contact-phone {
+        color: #e74c3c;
+    }
+    
+    .feedback-form {
+        background: white;
+    }
+    
+    .form-control {
+        border-radius: 8px;
+        border: 1px solid #eee;
+    }
+    
+    .btn-primary {
+        background-color: #e74c3c;
+        border-color: #e74c3c;
+        font-weight: 600;
+        border-radius: 8px;
+    }
+    
+    .btn-primary:hover {
+        background-color: #c0392b;
+        border-color: #c0392b;
+    }
+    
+    .hours-item {
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+</style>
+{% endblock content %}

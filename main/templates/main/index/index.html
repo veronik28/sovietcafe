@@ -1,0 +1,170 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block title %}Главная{% endblock title %}
+
+{% block content %}
+<section class="home">
+    <div class="container">
+        <div class="home-title text-center py-4">
+            <div class="delivery-image mb-4">
+                <img src="{% static 'img/deliv.jpg' %}" alt="Доставка чебуреков" class="img-fluid rounded shadow">
+            </div>
+            <a href="/menu/#" class="btn btn-primary btn-lg">ВСЁ МЕНЮ</a>
+        </div>
+        
+        <div class="home-recomendation text-center mb-5">
+            <h2 class="section-title">Хиты Меню</h2>
+        </div>
+        
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+            {% for product in random_products %}
+            <div class="col">
+                <a href="{{ product.get_absolute_url}}" class="card h-100 product-card">
+                    <div class="card-img-container">
+                        <img src="{% if product.image %}{{ product.image.url }}{% else %}{% static 'img/noimage.jpg' %}{% endif %}" 
+                             class="card-img-top stretched-img" 
+                             alt="{{ product.name }}">
+                    </div>
+                    <div class="card-body text-center">
+                        <h5 class="card-title">{{ product.name }}</h5>
+                        <div class="product-price">
+                            {% if product.discount %}
+                                <span class="text-decoration-line-through text-muted me-2">{{ product.price }} ₽</span>
+                                <span class="fw-bold text-danger">{{ product.sell_price }} ₽</span>
+                            {% else %}
+                                <span class="fw-bold">{{ product.price }} ₽</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock content %}
+
+{% block styles %}
+<style>
+    /* Стили для главной страницы */
+    .home {
+        padding: 2rem 0 !important;
+    }
+    
+    .section-title {
+        font-size: 2rem !important;
+        font-weight: 600 !important;
+        margin-bottom: 1.5rem !important;
+        position: relative !important;
+        display: inline-block !important;
+    }
+    
+    .section-title:after {
+        content: '' !important;
+        position: absolute !important;
+        bottom: -10px !important;
+        left: 50% !important;
+        transform: translateX(-50%) !important;
+        width: 80px !important;
+        height: 3px !important;
+        background: #e74c3c !important;
+    }
+    
+    .product-card {
+        border: 1px solid rgba(0,0,0,0.1) !important;
+        border-radius: 10px !important;
+        transition: all 0.3s ease !important;
+        text-decoration: none !important;
+        color: inherit !important;
+    }
+    
+    .product-card:hover {
+        transform: translateY(-5px) !important;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1) !important;
+        border-color: #e74c3c !important;
+    }
+    
+    .card-img-container {
+        height: 200px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        padding: 1rem !important;
+        overflow: hidden !important;
+    }
+    
+    .stretched-img {
+        width: 100% !important;
+        height: 100% !important;
+        object-fit: cover !important;
+    }
+    
+    .product-price {
+        font-size: 1.2rem !important;
+        margin-top: 0.5rem !important;
+    }
+    
+    .btn-primary {
+        background-color: #e74c3c !important;
+        border-color: #e74c3c !important;
+        padding: 0.5rem 2rem !important;
+        font-weight: 600 !important;
+    }
+    
+    .btn-primary:hover {
+        background-color: #c0392b !important;
+        border-color: #c0392b !important;
+    }
+    
+    /* Стили для изображения доставки */
+    .delivery-image {
+        max-width: 800px !important;
+        margin: 0 auto !important;
+        border-radius: 10px !important;
+        overflow: hidden !important;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1) !important;
+    }
+    
+    .delivery-image img {
+        transition: transform 0.3s ease !important;
+        width: 100% !important;
+    }
+    
+    .delivery-image:hover img {
+        transform: scale(1.02) !important;
+    }
+    
+    /* Адаптивные стили */
+    @media (max-width: 767.98px) {
+        .home {
+            padding: 1rem 0 !important;
+        }
+        
+        .section-title {
+            font-size: 1.5rem !important;
+        }
+        
+        .card-img-container {
+            height: 150px !important;
+        }
+        
+        .card-title {
+            font-size: 1rem !important;
+        }
+        
+        .product-price {
+            font-size: 1rem !important;
+        }
+        
+        .btn-primary {
+            padding: 0.5rem 1.5rem !important;
+            font-size: 0.9rem !important;
+        }
+        
+        .delivery-image {
+            max-width: 100% !important;
+        }
+    }
+</style>
+{% endblock %}

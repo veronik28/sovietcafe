@@ -1,0 +1,581 @@
+
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block title %}Корзина{% endblock title %}
+
+{% block content %}
+<section class="cart-container">
+    <h2 class="cart-title">Корзина</h2>
+    
+    <div class="cart-items">
+        {% for item in cart %}
+            {% with product=item.product %}
+            <div class="cart-item">
+                <div class="item-image">
+                    <img src="{% if product.image %}{{product.image.url}}{% else %}{% static 'img/noimage.jpg' %}{% endif %}" alt="{{ product.name }}">
+                </div>
+                
+                <div class="item-details">
+                    <div class="item-name">{{ product.name }}</div>
+                    
+                    <div class="item-controls">
+                        <form action="{% url 'cart:cart_remove' product.id %}" method="post" class="remove-form">
+                            {% csrf_token %}
+                            <button type="submit" class="remove-btn" title="Удалить">
+                                <svg width="16" height="16" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+                            </button>
+                        </form>
+                        
+                        <form action="{% url 'cart:cart_add' product.id %}" method="post" class="quantity-form">
+                            {% csrf_token %}
+                            <input type="hidden" name="override" value="True">
+                            <div class="quantity-selector">
+                                <button type="button" class="quantity-btn minus">-</button>
+                                <input type="number" name="quantity" value="{{ item.quantity }}" min="1" max="20" class="quantity-input">
+                                <button type="button" class="quantity-btn plus">+</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                
+              <div class="item-price">
+                {% if product.discount %}
+                    <div class="price-row">
+                        <span class="final-price">{{ product.sell_price }}₽ × {{ item.quantity }} = {{ item.total_discount_price|floatformat:2 }}₽</span>
+                    </div>
+                    <div class="old-price">{{ product.price }}₽</div>
+                {% else %}
+                    <div class="price-row">
+                        <span class="final-price">{{ product.price }}₽ × {{ item.quantity }} = {{ item.total_price|floatformat:2 }}₽</span>
+                    </div>
+                {% endif %}
+            </div>
+            </div>
+            {% endwith %}
+        {% endfor %}
+    </div>
+    
+    <div class="cart-summary">
+        <div class="total-amount">
+            <div class="total-row">
+                <span>Итого:</span>
+                <span>{{ cart.get_total_price|floatformat:2 }}₽</span>
+            </div>
+            {% if cart.coupon %}
+                <div class="discount-row">
+                    <span>Скидка ({{ cart.coupon.discount }}%):</span>
+                    <span>-{{ cart.get_discount|floatformat:2 }}₽</span>
+                </div>
+                <div class="total-with-discount">
+                    <span>К оплате:</span>
+                    <span>{{ cart.get_total_price_after_discount|floatformat:2 }}₽</span>
+                </div>
+            {% endif %}
+        </div>
+        
+        <div class="cart-actions">
+    <a href="/menu" class="btn back-btn">← Назад в меню</a>
+    {% if cart|length > 0 %}
+        <button id="checkout-btn" class="btn checkout-btn" {% if not is_minimum_amount_reached %}disabled style="opacity: 0.7; cursor: not-allowed; background: #e0e0e0;"{% endif %}>
+            Оформить заказ →
+        </button>
+    {% endif %}
+</div>
+    </div>
+</section>
+
+<style>
+/* Основные стили */
+
+.checkout-btn {
+    background: #e31e24 !important;
+    color: white;
+    border: none;
+    transition: all 0.3s ease;
+}
+
+.checkout-btn:disabled {
+    background: #e0e0e0 !important;
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+.checkout-btn:not(:disabled):hover {
+    background: #c11a20 !important;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.cart-container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px;
+    font-family: 'Segoe UI', Roboto, sans-serif;
+}
+
+.cart-title {
+    font-size: 24px;
+    margin-bottom: 20px;
+    text-align: center;
+    color: #333;
+}
+
+/* Карточка товара */
+.cart-items {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.cart-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.item-image {
+    flex: 0 0 80px;
+    height: 80px;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.item-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.item-details {
+    flex: 1;
+    min-width: 0;
+}
+
+.item-name {
+    font-weight: 500;
+    margin-bottom: 10px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.item-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.item-price {
+    flex: 0 0 160px;
+    text-align: right;
+    font-size: 14px;
+}
+
+/* Стили для цены */
+.price-row {
+    margin-bottom: 3px;
+}
+
+.final-price {
+    font-weight: 600;
+    color: #e31e24;
+}
+
+.old-price {
+    text-decoration: line-through;
+    color: #999;
+    font-size: 13px;
+}
+
+/* Управление количеством */
+.quantity-form {
+    display: flex;
+    align-items: center;
+}
+
+.quantity-selector {
+    display: flex;
+    align-items: center;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.quantity-input {
+    width: 40px;
+    height: 34px;
+    text-align: center;
+    border: none;
+    border-left: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+    /*-moz-appearance: textfield;*/
+}
+
+.quantity-input::-webkit-inner-spin-button,
+.quantity-input::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.quantity-btn {
+    width: 34px;
+    height: 34px;
+    background: #f8f8f8;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+}
+
+.quantity-btn:hover {
+    background: #eee;
+}
+
+/* Кнопка удаления */
+.remove-btn {
+    width: 34px;
+    height: 34px;
+    background: #f8f8f8;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+}
+
+.remove-btn svg {
+    width: 16px;
+    height: 16px;
+    fill: #999;
+}
+
+.remove-btn:hover {
+    background: #fee;
+}
+
+.remove-btn:hover svg {
+    fill: #e31e24;
+}
+
+/* Итого */
+.cart-summary {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.total-amount {
+    margin-bottom: 20px;
+}
+
+.total-row, .discount-row, .total-with-discount {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+}
+
+.total-row {
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.discount-row {
+    color: #e31e24;
+}
+
+.total-with-discount {
+    font-size: 20px;
+    font-weight: 700;
+    border-top: 1px solid #eee;
+    margin-top: 8px;
+    padding-top: 12px;
+}
+
+/* Кнопки */
+.cart-actions {
+    display: flex;
+    gap: 15px;
+}
+
+.btn {
+    flex: 1;
+    padding: 12px;
+    text-align: center;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.back-btn {
+    background: #f8f8f8;
+    color: #333;
+    border: 1px solid #ddd;
+}
+
+.checkout-btn {
+    background: #e31e24;
+    color: white;
+}
+
+/* Адаптация для мобильных */
+@media (max-width: 768px) {
+    .cart-container {
+        padding: 15px;
+    }
+    
+    .cart-item {
+        flex-wrap: wrap;
+        gap: 10px;
+        padding: 12px;
+    }
+    
+    .item-image {
+        flex: 0 0 60px;
+        height: 60px;
+    }
+    
+    .item-price {
+        flex: 1 0 100%;
+        text-align: left;
+        padding-top: 10px;
+        border-top: 1px solid #f5f5f5;
+        margin-top: 10px;
+    }
+    
+    .cart-actions {
+        flex-direction: column;
+    }
+}
+
+@media (max-width: 480px) {
+    .item-name {
+        font-size: 15px;
+    }
+    
+    .item-price {
+        font-size: 13px;
+    }
+    
+    .total-row, .total-with-discount {
+        font-size: 16px;
+    }
+
+.min-order-alert {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 15px;
+    background-color: #fff8e1;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-size: 15px;
+    color: #5d4037;
+    border-left: 4px solid #ffa000;
+}
+
+.min-order-alert svg {
+    flex-shrink: 0;
+}
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Функция для обновления отображения цены в реальном времени
+    function updateItemPriceDisplay(item, quantity) {
+        const priceElement = item.querySelector('.price-row .final-price');
+        if (!priceElement) return;
+        
+        const priceText = priceElement.textContent;
+        const priceParts = priceText.split('×');
+        if (priceParts.length === 2) {
+            const pricePerUnit = parseFloat(priceParts[0].replace('₽', '').trim());
+            const totalPrice = (pricePerUnit * quantity).toFixed(2);
+            priceElement.textContent = `${pricePerUnit}₽ × ${quantity} = ${totalPrice}₽`;
+        }
+    }
+
+    // Основная функция обновления интерфейса
+    async function updateCartUI() {
+        try {
+            const response = await fetch(window.location.href, {
+                headers: { 'X-Requested-With': 'XMLHttpRequest' }
+            });
+            
+            if (!response.ok) return;
+            
+            const contentType = response.headers.get('content-type');
+            if (contentType && contentType.includes('application/json')) {
+                const data = await response.json();
+                
+                // Обновляем состояние кнопки
+                const checkoutBtn = document.getElementById('checkout-btn');
+                if (checkoutBtn) {
+                    checkoutBtn.disabled = !data.is_minimum_amount_reached;
+                    
+                    if (checkoutBtn.disabled) {
+                        checkoutBtn.style.opacity = '0.7';
+                        checkoutBtn.style.cursor = 'not-allowed';
+                        checkoutBtn.style.background = '#e0e0e0';
+                    } else {
+                        checkoutBtn.style.opacity = '';
+                        checkoutBtn.style.cursor = '';
+                        checkoutBtn.style.background = '#e31e24';
+                        if (!checkoutBtn.hasAttribute('data-listener-added')) {
+                            checkoutBtn.setAttribute('data-listener-added', 'true');
+                            checkoutBtn.addEventListener('click', function() {
+                                window.location.href = "{% url 'orders:order_create' %}";
+                            });
+                        }
+                    }
+                }
+                
+                // Обновляем общую сумму
+                const totalElement = document.querySelector('.total-row span:last-child');
+                if (totalElement) {
+                    totalElement.textContent = data.total_price + '₽';
+                }
+                
+            } else {
+                const html = await response.text();
+                const parser = new DOMParser();
+                const newDoc = parser.parseFromString(html, 'text/html');
+                
+                // Обновляем цены товаров
+                document.querySelectorAll('.cart-item').forEach((item, index) => {
+                    const newItem = newDoc.querySelectorAll('.cart-item')[index];
+                    if (newItem) {
+                        // Обновляем только цену товара
+                        const priceElement = item.querySelector('.price-row .final-price');
+                        const newPriceElement = newItem.querySelector('.price-row .final-price');
+                        if (priceElement && newPriceElement) {
+                            priceElement.textContent = newPriceElement.textContent;
+                        }
+                        
+                        // Обновляем старую цену, если есть скидка
+                        const oldPriceElement = item.querySelector('.old-price');
+                        const newOldPriceElement = newItem.querySelector('.old-price');
+                        if (oldPriceElement && newOldPriceElement) {
+                            oldPriceElement.textContent = newOldPriceElement.textContent;
+                        } else if (oldPriceElement && !newOldPriceElement) {
+                            oldPriceElement.remove();
+                        } else if (!oldPriceElement && newOldPriceElement) {
+                            item.querySelector('.item-price').innerHTML += 
+                                `<div class="old-price">${newOldPriceElement.textContent}</div>`;
+                        }
+                    }
+                });
+                
+                // Обновляем итоговую сумму
+                const newTotal = newDoc.querySelector('.total-row span:last-child')?.textContent;
+                if (newTotal) {
+                    document.querySelector('.total-row span:last-child').textContent = newTotal;
+                }
+                
+                updateDiscountSection(newDoc);
+            }
+        } catch (error) {
+            console.error('Ошибка при обновлении корзины:', error);
+        }
+    }
+    
+    // Функция для обновления раздела скидки
+    function updateDiscountSection(newDoc) {
+        const discountRow = newDoc.querySelector('.discount-row');
+        const totalWithDiscount = newDoc.querySelector('.total-with-discount');
+        const summarySection = document.querySelector('.total-amount');
+        
+        if (discountRow && totalWithDiscount) {
+            if (document.querySelector('.discount-row')) {
+                document.querySelector('.discount-row').outerHTML = discountRow.outerHTML;
+                document.querySelector('.total-with-discount').outerHTML = totalWithDiscount.outerHTML;
+            } else {
+                document.querySelector('.total-row').insertAdjacentHTML('afterend', 
+                    discountRow.outerHTML + totalWithDiscount.outerHTML);
+            }
+        } else if (document.querySelector('.discount-row')) {
+            document.querySelector('.discount-row').remove();
+            document.querySelector('.total-with-discount').remove();
+        }
+    }
+    
+    // Обработчики изменения количества товара
+    document.querySelectorAll('.quantity-selector').forEach(selector => {
+        const form = selector.closest('.quantity-form');
+        const input = selector.querySelector('.quantity-input');
+        const minusBtn = selector.querySelector('.minus');
+        const plusBtn = selector.querySelector('.plus');
+        const item = selector.closest('.cart-item');
+        
+        // Обработчик уменьшения количества
+        minusBtn.addEventListener('click', () => {
+            let value = parseInt(input.value);
+            if (value > 1) {
+                input.value = value - 1;
+                updateItemPriceDisplay(item, input.value);
+                submitQuantityForm(form);
+            }
+        });
+        
+        // Обработчик увеличения количества
+        plusBtn.addEventListener('click', () => {
+            let value = parseInt(input.value);
+            if (value < 20) {
+                input.value = value + 1;
+                updateItemPriceDisplay(item, input.value);
+                submitQuantityForm(form);
+            }
+        });
+        
+        // Обработчик ручного ввода
+        input.addEventListener('change', () => {
+            let value = parseInt(input.value);
+            if (isNaN(value) || value < 1) input.value = 1;
+            if (value > 20) input.value = 20;
+            updateItemPriceDisplay(item, input.value);
+            submitQuantityForm(form);
+        });
+    });
+    
+    // Функция отправки формы изменения количества
+    async function submitQuantityForm(form) {
+        try {
+            const response = await fetch(form.action, {
+                method: 'POST',
+                body: new FormData(form),
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRFToken': form.querySelector('[name=csrfmiddlewaretoken]').value
+                }
+            });
+            
+            if (response.ok) {
+                await updateCartUI();
+            }
+        } catch (error) {
+            console.error('Ошибка при обновлении количества:', error);
+        }
+    }
+    
+    // Инициализация кнопки оформления при загрузке
+    const checkoutBtn = document.getElementById('checkout-btn');
+    if (checkoutBtn && !checkoutBtn.disabled) {
+        checkoutBtn.addEventListener('click', function() {
+            window.location.href = "{% url 'orders:order_create' %}";
+        });
+    }
+});
+</script>
+{% endblock content %}

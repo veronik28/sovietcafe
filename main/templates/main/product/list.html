@@ -1,0 +1,434 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class='menu-page'>
+    <div class="menu-header">
+        <h1 class="menu-title text-center">
+            {% if category %}{{category.name}}{% else %}МЕНЮ{% endif %}
+        </h1>
+    </div>
+
+    <div class="menu-container">
+        <!-- Бургер-меню для мобильных -->
+        <button class="burger-toggle d-lg-none" type="button">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"/>
+            </svg>
+        </button>
+
+        <!-- Сайдбар категорий -->
+        <div class="menu-sidebar">
+            <ul class="category-list">
+                <li {% if not category %} class="selected" {% endif %}>
+                    <a href="{% url 'main:product_list' %}">Все</a>
+                </li>
+                {% for c in categories %}
+                    <li {% if category.slug == c.slug %} class="selected" {% endif %}>
+                        <a href="{{c.get_absolute_url}}">{{c.name}}</a>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <!-- Основное содержимое -->
+        <div class="menu-content">
+            <div class="product-grid">
+                {% for product in products %}
+                    <div class="product-card">
+                        <a href="{{product.get_absolute_url}}" class="product-link">
+                            <div class="product-image-container">
+                                <img src="{% if product.image %}{{product.image.url}}{% else %}{% static 'img/noimage.jpg' %}{% endif %}" 
+                                     class="product-image" alt="{{product.name}}">
+                            </div>
+                            <div class="product-info">
+                                <h5 class="product-title">{{product.name}}</h5>
+                                {% if product.discount %}
+                                <div class="product-prices">
+                                    <span class="original-price">{{product.price}} ₽</span>
+                                    <span class="discount-price">{{product.sell_price}} ₽</span>
+                                </div>
+                                {% else %}
+                                <div class="product-price">{{product.price}} ₽</div>
+                                {% endif %}
+                            </div>
+                        </a>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Пагинация -->
+    {% if products.paginator.num_pages > 1 %}
+<div class="pagination-wrapper">
+    <nav class="pagination-container">
+        <ul class="pagination">
+            <li class="page-item {% if not products.has_previous %}disabled{% endif %}">
+                <a class="page-link" href="{% if products.has_previous %}?page={{products.previous_page_number}}{% endif %}" aria-label="Previous">
+                    <span aria-hidden="true" class="pagination-arrow">‹</span>
+                </a>
+            </li>
+            
+            {% for page in products.paginator.page_range %}
+                {% if page >= products.number|add:-2 and page <= products.number|add:2 %}
+                    <li class="page-item {% if products.number == page %}active{% endif %}">
+                        <a class="page-link" href="?page={{page}}">{{page}}</a>
+                    </li>
+                {% endif %}
+            {% endfor %}
+            
+            <li class="page-item {% if not products.has_next %}disabled{% endif %}">
+                <a class="page-link" href="{% if products.has_next %}?page={{products.next_page_number}}{% endif %}" aria-label="Next">
+                    <span aria-hidden="true" class="pagination-arrow">›</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</div>
+{% endif %}
+</div>
+
+<style>
+    /* Основные стили */
+    .menu-page {
+        padding: 0 15px;
+        max-width: 1200px;
+        margin: 0 auto;
+        position: relative;
+        min-height: calc(100vh - 120px); /* Учитываем высоту header и footer */
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .menu-header {
+        margin-bottom: 20px;
+        padding-top: 20px;
+    }
+    
+    .menu-title {
+        font-size: 1.8rem;
+        font-weight: bold;
+        color: #333;
+        margin: 0;
+    }
+    
+    /* Бургер-меню */
+    .burger-toggle {
+        display: none;
+        position: fixed;
+        top: 95px; /* Опущено на 3px ниже */
+        left: 15px;
+        width: 44px;
+        height: 44px;
+        border-radius: 4px;
+        background: #e74c3c;
+        border: none;
+        color: white;
+        z-index: 1100;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    }
+    
+    .burger-toggle svg {
+        width: 24px;
+        height: 24px;
+    }
+    
+    /* Сайдбар */
+    .menu-container {
+        display: flex;
+        gap: 20px;
+        position: relative;
+        flex-grow: 1;
+    }
+    
+    .menu-sidebar {
+        width: 250px;
+        flex-shrink: 0;
+    }
+    
+    .category-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+    
+    .category-list li {
+        margin-bottom: 5px;
+    }
+    
+    .category-list a {
+        display: block;
+        padding: 8px 10px;
+        color: #555;
+        text-decoration: none;
+        border-radius: 4px;
+        transition: all 0.2s;
+    }
+    
+    .category-list a:hover {
+        background: #f5f5f5;
+        color: #e74c3c;
+    }
+    
+    .category-list .selected a {
+        background: #f5f5f5;
+        color: #e74c3c;
+        font-weight: bold;
+    }
+    
+    /* Сетка продуктов */
+    .menu-content {
+        flex-grow: 1;
+        margin-bottom: 20px;
+    }
+    
+    .product-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 15px;
+        margin-bottom: 15px;
+    }
+    
+    .product-card {
+        background: white;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+    
+    .product-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    
+    .product-image-container {
+        aspect-ratio: 1/1;
+        overflow: hidden;
+    }
+    
+    .product-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+    }
+    
+    .product-link:hover .product-image {
+        transform: scale(1.05);
+    }
+    
+    .product-info {
+        padding: 12px;
+    }
+    
+    .product-title {
+        font-size: 0.95rem;
+        margin: 0 0 8px;
+        text-align: center;
+        color: #333;
+        font-weight: 500;
+        height: 40px;
+        overflow: hidden;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+    }
+    
+    .text-truncate-2 {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        line-clamp: 2;  /* Стандартное свойство */
+    }
+
+    .product-prices, .product-price {
+        text-align: center;
+        margin-bottom: 0;
+    }
+    
+    .original-price {
+        text-decoration: line-through;
+        color: #999;
+        font-size: 0.8rem;
+        margin-right: 6px;
+    }
+    
+    .discount-price {
+        color: #e74c3c;
+        font-weight: bold;
+        font-size: 0.95rem;
+    }
+    
+    .product-price {
+        color: #333;
+        font-weight: bold;
+        font-size: 0.95rem;
+    }
+    
+    /* Пагинация */
+    .pagination-wrapper {
+        margin-top: 20px; /* Добавил отступ сверху */
+        margin-bottom: 30px; /* Увеличил отступ снизу */
+        padding: 10px 0;
+    }
+
+    .pagination-container {
+        display: flex;
+        justify-content: center;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 15px;
+    }
+
+    .pagination {
+        display: flex;
+        gap: 4px;
+        margin: 0;
+        padding: 0;
+        align-items: center;
+    }
+    
+    .page-item {
+        list-style: none;
+    }
+    
+    .page-link {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 36px;
+        height: 36px;
+        padding: 0 8px;
+        border-radius: 4px;
+        border: 1px solid #ddd;
+        color: #333;
+        text-decoration: none;
+        font-size: 0.9rem;
+        transition: all 0.2s;
+    }
+    
+    .page-link:hover {
+        background-color: #f5f5f5;
+    }
+    
+    .page-item.active .page-link {
+        background-color: #e74c3c;
+        color: white;
+        border-color: #e74c3c;
+    }
+    
+    .page-item.disabled .page-link {
+        color: #ccc;
+        pointer-events: none;
+        border-color: #eee;
+    }
+    
+    .pagination-arrow {
+        font-size: 1rem;
+        line-height: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+    }
+    
+    /* Мобильная версия */
+    @media (max-width: 991px) {
+        .menu-container {
+            flex-direction: column;
+        }
+        
+        .menu-sidebar {
+            position: fixed;
+            top: 0;
+            left: -100%;
+            bottom: 0;
+            width: 80%;
+            max-width: 300px;
+            background: white;
+            z-index: 1100;
+            padding: 20px;
+            box-shadow: 2px 0 15px rgba(0,0,0,0.2);
+            transition: left 0.3s ease;
+            overflow-y: auto;
+            padding-top: 83px; /* Отступ под хедер */
+        }
+        
+        .menu-sidebar.active {
+            left: 0;
+        }
+        
+        .burger-toggle {
+            display: flex;
+        }
+        
+        .product-grid {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+        
+        .product-title {
+            font-size: 0.85rem;
+            height: 36px;
+        }
+        
+        .product-info {
+            padding: 8px;
+        }
+        
+        .pagination {
+            gap: 2px;
+        }
+        
+        .page-link {
+            min-width: 32px;
+            height: 32px;
+            font-size: 0.85rem;
+            padding: 0 6px;
+        }
+        
+        .pagination-arrow {
+            font-size: 0.9rem;
+        }
+    }
+</style>
+
+<script>
+    // Открытие/закрытие меню категорий на мобильных
+    document.addEventListener('DOMContentLoaded', function() {
+        const burgerToggle = document.querySelector('.burger-toggle');
+        if (burgerToggle) {
+            burgerToggle.addEventListener('click', function() {
+                const sidebar = document.querySelector('.menu-sidebar');
+                sidebar.classList.toggle('active');
+                
+                // Добавляем затемнение фона
+                if (sidebar.classList.contains('active')) {
+                    const overlay = document.createElement('div');
+                    overlay.className = 'sidebar-overlay';
+                    overlay.style.position = 'fixed';
+                    overlay.style.top = '0';
+                    overlay.style.left = '0';
+                    overlay.style.right = '0';
+                    overlay.style.bottom = '0';
+                    overlay.style.backgroundColor = 'rgba(0,0,0,0.5)';
+                    overlay.style.zIndex = '1099';
+                    overlay.addEventListener('click', function() {
+                        sidebar.classList.remove('active');
+                        document.body.removeChild(overlay);
+                    });
+                    document.body.appendChild(overlay);
+                } else {
+                    const overlay = document.querySelector('.sidebar-overlay');
+                    if (overlay) document.body.removeChild(overlay);
+                }
+            });
+        }
+    });
+</script>
+{% endblock %}

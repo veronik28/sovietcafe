@@ -1,0 +1,240 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block title %}Оплата и доставка | Советская чебуречная{% endblock %}
+
+{% block content %}
+<section class="delivery-page py-5">
+    <div class="container">
+        <h1 class="text-center mb-5">Оплата и доставка</h1>
+        
+        <!-- Способы доставки -->
+        <div class="row mb-5">
+            <div class="col-md-6 mb-4">
+                <div class="card h-100 border-0 shadow">
+                    <div class="card-body text-center">
+                        <h3><i class="fas fa-motorcycle text-danger me-2"></i>Курьерская доставка</h3>
+                        <p class="mb-0">Доставим ваши чебуреки в течение 60 минут</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 mb-4">
+                <div class="card h-100 border-0 shadow">
+                    <div class="card-body text-center">
+                        <h3><i class="fas fa-store text-danger me-2"></i>Самовывоз</h3>
+                        <p class="mb-0">ул. Красина, 27, стр.1 (готовим за 30 минут)</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Карта с зонами доставки -->
+        <div class="mb-5">
+            <h2 class="text-center mb-4">Зоны доставки</h2>
+            <div class="position-relative rounded-3 overflow-hidden shadow" style="height: 500px;">
+                <div id="delivery-map" style="width: 100%; height: 100%;"></div>
+                <div class="position-absolute bottom-0 end-0 m-3 p-2 bg-white rounded shadow-sm">
+                    <div class="d-flex align-items-center mb-1">
+                        <div class="me-2" style="width: 20px; height: 20px; background-color: #4CAF50; opacity: 0.5;"></div>
+                        <span>Бесплатно</span>
+                    </div>
+                    <div class="d-flex align-items-center mb-1">
+                        <div class="me-2" style="width: 20px; height: 20px; background-color: #FFC107; opacity: 0.5;"></div>
+                        <span>150 ₽</span>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <div class="me-2" style="width: 20px; height: 20px; background-color: #FF5722; opacity: 0.5;"></div>
+                        <span>300 ₽</span>
+                    </div>
+                </div>
+            </div>
+            <div class="alert alert-info mt-3">
+                <p class="mb-0">Минимальная сумма заказа для доставки - 500 ₽. Бесплатная доставка при заказе от 1500 ₽.</p>
+            </div>
+        </div>
+
+        <!-- Способы оплаты -->
+        <div class="mb-5">
+            <h2 class="text-center mb-4">Способы оплаты</h2>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <div class="card h-100 border-0 shadow">
+                        <div class="card-body text-center">
+                            <h3><i class="fas fa-money-bill-wave text-danger me-2"></i>Наличными</h3>
+                            <p class="mb-0">Курьеру при получении заказа</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <div class="card h-100 border-0 shadow">
+                        <div class="card-body text-center">
+                            <h3><i class="fas fa-credit-card text-danger me-2"></i>Картой онлайн</h3>
+                            <p class="mb-0">Visa, Mastercard, МИР</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Условия доставки -->
+        <div class="mb-4">
+            <h2 class="text-center mb-4">Условия доставки</h2>
+            <div class="accordion" id="deliveryTerms">
+                <div class="accordion-item">
+                    <h3 class="accordion-header">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne">
+                            Время доставки
+                        </button>
+                    </h3>
+                    <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#deliveryTerms">
+                        <div class="accordion-body">
+                            Доставка осуществляется <strong>с 10:00 до 22:00</strong> без выходных. Среднее время доставки - 60 минут.
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h3 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo">
+                            Минимальный заказ
+                        </button>
+                    </h3>
+                    <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#deliveryTerms">
+                        <div class="accordion-body">
+                            Минимальная сумма заказа для доставки - <strong>500 рублей</strong>. Бесплатная доставка при заказе от <strong>1500 рублей</strong>.
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h3 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree">
+                            Контроль качества
+                        </button>
+                    </h3>
+                    <div id="collapseThree" class="accordion-collapse collapse" data-bs-parent="#deliveryTerms">
+                        <div class="accordion-body">
+                            Если у вас есть претензии к качеству, звоните: <strong>+7 (495) 861-35-80</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://api-maps.yandex.ru/2.1/?apikey=98e0df28-87d3-429d-be61-9bd255fbcf59&lang=ru_RU"></script>
+<script>
+    ymaps.ready(function() {
+        try {
+            // Создаем карту с центром на ул. Красина, 27
+            var myMap = new ymaps.Map("delivery-map", {
+                center: [55.767670, 37.588144],
+                zoom: 14,
+                controls: ['zoomControl', 'typeSelector']
+            });
+
+            // Добавляем метку кафе
+            var myPlacemark = new ymaps.Placemark([55.767670, 37.588144], {
+                hintContent: 'Советская чебуречная',
+                balloonContent: 'ул. Красина, 27, стр.1'
+            }, {
+                preset: 'islands#redDotIcon',
+                iconColor: '#e74c3c'
+            });
+            myMap.geoObjects.add(myPlacemark);
+
+            // Зоны доставки (пример для Москвы)
+            var deliveryZones = [
+                {
+                    coords: [
+                        [55.775, 37.580], [55.775, 37.595],
+                        [55.760, 37.595], [55.760, 37.580]
+                    ],
+                    price: 0,
+                    color: '#4CAF50',
+                    hint: 'Бесплатная доставка (15-30 мин)'
+                },
+                {
+                    coords: [
+                        [55.780, 37.570], [55.780, 37.600],
+                        [55.755, 37.600], [55.755, 37.570]
+                    ],
+                    price: 150,
+                    color: '#FFC107',
+                    hint: 'Доставка 150 ₽ (30-45 мин)'
+                },
+                {
+                    coords: [
+                        [55.785, 37.560], [55.785, 37.610],
+                        [55.750, 37.610], [55.750, 37.560]
+                    ],
+                    price: 300,
+                    color: '#FF5722',
+                    hint: 'Доставка 300 ₽ (45-60 мин)'
+                }
+            ];
+
+            // Добавляем зоны на карту
+            deliveryZones.forEach(function(zone) {
+                var polygon = new ymaps.Polygon([zone.coords], {
+                    hintContent: zone.hint + '<br>Стоимость доставки: ' + 
+                                (zone.price > 0 ? zone.price + ' ₽' : 'бесплатно')
+                }, {
+                    fillColor: zone.color + '80',
+                    strokeColor: zone.color,
+                    strokeWidth: 2,
+                    fillOpacity: 0.5
+                });
+
+                // Эффекты при наведении
+                polygon.events.add('mouseenter', function() {
+                    polygon.options.set('fillOpacity', 0.7);
+                    polygon.options.set('strokeWidth', 3);
+                });
+
+                polygon.events.add('mouseleave', function() {
+                    polygon.options.set('fillOpacity', 0.5);
+                    polygon.options.set('strokeWidth', 2);
+                });
+
+                myMap.geoObjects.add(polygon);
+            });
+
+        } catch (e) {
+            console.error("Ошибка загрузки карты:", e);
+            document.getElementById('delivery-map').innerHTML = 
+                '<div class="alert alert-danger m-3">Карта временно недоступна</div>';
+        }
+    });
+</script>
+{% endblock %}
+
+{% block styles %}
+<style>
+    .delivery-page {
+        background-color: #fff9f9;
+    }
+    
+    .card {
+        transition: transform 0.3s ease;
+    }
+    
+    .card:hover {
+        transform: translateY(-5px);
+    }
+    
+    .accordion-button:not(.collapsed) {
+        background-color: rgba(231, 76, 60, 0.1);
+        color: #e74c3c;
+    }
+    
+    .accordion-button:focus {
+        box-shadow: 0 0 0 0.25rem rgba(231, 76, 60, 0.25);
+    }
+    
+    #delivery-map {
+        min-height: 400px;
+    }
+</style>
+{% endblock %}

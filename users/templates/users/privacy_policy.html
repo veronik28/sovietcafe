@@ -1,0 +1,84 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block title %}Политика конфиденциальности | Советская чебуречная{% endblock title %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-sm">
+                <div class="card-body p-4 p-md-5">
+                    <h1 class="h2 mb-4 text-center">Политика конфиденциальности кафе "Советская чебуречная"</h1>
+                    
+                    <div class="content">
+                        <p class="text-muted">Последнее обновление: 17 июня 2025 года</p>
+                        
+                        <h3 class="h4 mt-4 text-primary">1. Основные принципы</h3>
+                        <p>Кафе "Советская чебуречная" уважает ваше право на конфиденциальность и обязуется защищать персональные данные посетителей сайта cheburek.cafe.</p>
+                        
+                        <h3 class="h4 mt-4 text-primary">2. Какие данные мы собираем</h3>
+                        <p>2.1. При оформлении заказа:</p>
+                        <ul class="list-unstyled ps-4">
+                            <li><i class="fas fa-user-circle me-2 text-secondary"></i>Имя и контактные данные</li>
+                            <li><i class="fas fa-phone-alt me-2 text-secondary"></i>Номер телефона</li>
+                            <li><i class="fas fa-map-marker-alt me-2 text-secondary"></i>Адрес доставки (при необходимости)</li>
+                        </ul>
+                        <p>2.2. Автоматически собираемые данные:</p>
+                        <ul class="list-unstyled ps-4">
+                            <li><i class="fas fa-laptop me-2 text-secondary"></i>IP-адрес</li>
+                            <li><i class="fas fa-cookie me-2 text-secondary"></i>Данные cookies</li>
+                        </ul>
+                        
+                        <h3 class="h4 mt-4 text-primary">3. Цели обработки данных</h3>
+                        <div class="d-flex align-items-start mb-3">
+                            <i class="fas fa-utensils text-success mt-1 me-3"></i>
+                            <span>Оформление и выполнение ваших заказов</span>
+                        </div>
+                        <div class="d-flex align-items-start mb-3">
+                            <i class="fas fa-bullhorn text-warning mt-1 me-3"></i>
+                            <span>Информирование об акциях (только с вашего согласия)</span>
+                        </div>
+                        <div class="d-flex align-items-start">
+                            <i class="fas fa-chart-line text-info mt-1 me-3"></i>
+                            <span>Улучшение качества наших услуг</span>
+                        </div>
+                        
+                        <h3 class="h4 mt-4 text-primary">4. Защита данных</h3>
+                        <div class="alert alert-success">
+                            <i class="fas fa-shield-alt me-2"></i>
+                            <strong>Мы гарантируем:</strong>
+                            <ul class="mt-2 mb-0">
+                                <li>Использование SSL-шифрования</li>
+                                <li>Ограниченный доступ к персональным данным</li>
+                                <li>Соблюдение требований 152-ФЗ</li>
+                            </ul>
+                        </div>
+                        
+                        <h3 class="h4 mt-4 text-primary">5. Ваши права</h3>
+                        <p>Вы можете в любой момент:</p>
+                        <ul class="list-unstyled ps-4">
+                            <li><i class="fas fa-check-circle text-success me-2"></i>Запросить доступ к вашим данным</li>
+                            <li><i class="fas fa-edit text-primary me-2"></i>Изменить или удалить информацию</li>
+                            <li><i class="fas fa-ban text-danger me-2"></i>Отозвать согласие на обработку</li>
+                        </ul>
+                        
+                        <h3 class="h4 mt-4 text-primary">6. Контакты</h3>
+                        <p>По вопросам защиты персональных данных обращайтесь:</p>
+                        <ul class="list-unstyled ps-4">
+                            <li><i class="fas fa-user-shield me-2"></i>Ответственный за защиту данных: Иванов И.И.</li>
+                            <li><i class="fas fa-at me-2"></i>Email: privacy@cheburek.cafe</li>
+                            <li><i class="fas fa-phone-alt me-2"></i>Телефон: +7 (495) 123-45-67 (доб. 123)</li>
+                        </ul>
+                        
+                        <div class="alert alert-info mt-4">
+                            <i class="fas fa-info-circle me-2"></i>
+                            Продолжая использовать наш сайт, вы соглашаетесь с условиями обработки персональных данных в соответствии с настоящей Политикой.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
