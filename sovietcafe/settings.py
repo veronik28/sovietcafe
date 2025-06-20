@@ -83,11 +83,14 @@ WSGI_APPLICATION = 'sovietcafe.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'default_db',
-        'USER': 'cloud_user',
-        'PASSWORD': '1gNXC1I&XjM!',
-        'HOST': 'comekatunap.beget.app',
+        'NAME': 'neondb',
+        'USER': 'neondb_owner',
+        'PASSWORD': 'npg_BzM6A2SPisOE',
+        'HOST': 'ep-polished-thunder-a4ti5qc9-pooler.us-east-1.aws.neon.tech',
         'PORT': '5432',
+        'OPTIONS': {
+            'sslmode': 'require',
+        },
     }
 }
 # Password validation
