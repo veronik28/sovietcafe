@@ -12,6 +12,9 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from pathlib import Path
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 # BASE_DIR = Path(__file__).resolve().parent.parent
@@ -21,7 +24,8 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-7k#1w9262j0(!cegr56y9!=9o0$gjztlui2o08w41^+!#w75=b'
+
+SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True  
@@ -83,11 +87,12 @@ WSGI_APPLICATION = 'sovietcafe.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'sovietcafe',
-        'USER': 'sovietcafe',
-        'PASSWORD': '123',
-        'HOST': 'localhost',
-        'PORT': '5432',
+        'HOST': os.getenv('POSTGRES_HOST', 'localhost'),
+        'PORT': os.getenv('POSTGRES_PORT', 5432),
+        'USER': os.getenv('POSTGRES_USER', 'postgres'),
+        'PASSWORD': os.getenv('POSTGRES_PASSWORD'),
+        'NAME': os.getenv('POSTGRES_DB', 'db01'),
+        'ATOMIC_REQUESTS': True,
     }
 }
 # Password validation
