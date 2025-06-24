@@ -24,9 +24,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'django-insecure-7k#1w9262j0(!cegr56y9!=9o0$gjztlui2o08w41^+!#w75=b'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False  
+DEBUG = True  
 
-ALLOWED_HOSTS = ['vkushew7.beget.tech',]
+ALLOWED_HOSTS = ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
 
 # Application definition
@@ -83,14 +83,11 @@ WSGI_APPLICATION = 'sovietcafe.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'neondb',
-        'USER': 'neondb_owner',
-        'PASSWORD': 'npg_BzM6A2SPisOE',
-        'HOST': 'ep-polished-thunder-a4ti5qc9-pooler.us-east-1.aws.neon.tech',
+        'NAME': 'sovietcafe',
+        'USER': 'sovietcafe',
+        'PASSWORD': '123',
+        'HOST': 'localhost',
         'PORT': '5432',
-        'OPTIONS': {
-            'sslmode': 'require',
-        },
     }
 }
 # Password validation
